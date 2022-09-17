@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record BookDto(String isbn, BookDetailDto details) {}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-static record BookDetailDto(
+final record BookDetailDto(
     List<PublisherDto> publishers, 
     IdentifiersDto identifiers, 
     String title, 
@@ -29,13 +29,13 @@ static record BookDetailDto(
     ) {}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-static record SubjectsDto (String url, String name){}
+final record SubjectsDto (String url, String name){}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-static record PublisherDto(String name){}
+final record PublisherDto(String name){}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-static record IdentifiersDto(
+final record IdentifiersDto(
     @JsonProperty("isbn_13")
     List<String> isbn13,
     List<String> amazon,
@@ -45,7 +45,7 @@ static record IdentifiersDto(
 ){}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-static record CoverUrlDto(String small, String large, String medium){}
+final record CoverUrlDto(String small, String large, String medium){}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-static record AuthorDto (String url, String name) {}
+final record AuthorDto (String url, String name) {}
