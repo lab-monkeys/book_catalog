@@ -8,7 +8,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.BookDto;
+import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.OpenLibraryBookDto;
+import fun.is.quarkus.book_catalog.dto.BookInfoDto;
 
 @Mapper(componentModel = "cdi")
 public interface BookInfoMapper {
@@ -24,10 +25,10 @@ public interface BookInfoMapper {
     List<Author> authorDtosToEntitys(List<AuthorDTO> dtos);
 
     @Mapping(target = "isbns", ignore = true)
-    BookInfoDTO bookInfoEntityToDto(BookInfo entity);
+    BookInfoDto bookInfoEntityToDto(BookInfo entity);
 
     @AfterMapping
-    default void bookInfoEntityToDtoCustom(BookInfo entity, @MappingTarget BookInfoDTO dto) {
+    default void bookInfoEntityToDtoCustom(BookInfo entity, @MappingTarget BookInfoDto dto) {
         List<String> isbns = new ArrayList<String>();
         for (ISBN isbn : entity.getIsbns()) {
             isbns.add(isbn.getIsbn());
@@ -36,10 +37,10 @@ public interface BookInfoMapper {
     }
 
     @Mapping(target = "isbns", ignore = true)
-    BookInfo bookInfoDtoToEntity(BookInfoDTO dto);
+    BookInfo bookInfoDtoToEntity(BookInfoDto dto);
 
     @AfterMapping
-    default void bookInfoDtoToEntityCustom(BookInfoDTO dto, @MappingTarget BookInfo bookInfo) {
+    default void bookInfoDtoToEntityCustom(BookInfoDto dto, @MappingTarget BookInfo bookInfo) {
         List<ISBN> isbns = new ArrayList<ISBN>();
         for (String isbn : dto.getIsbns()) {
             ISBN entity = new ISBN();
@@ -68,13 +69,13 @@ public interface BookInfoMapper {
     @Mapping(target = "inCatalog", ignore = true)
     @Mapping(target = "catalogId", ignore = true)
     @Mapping(target = "isbns", ignore = true)
-    BookInfoDTO bookInfoOlToBookInfoDTO(BookDto bookInfo);
+    BookInfoDto bookInfoOlToBookInfoDTO(OpenLibraryBookDto bookInfo);
 
     @AfterMapping
-    default void bookInfoOlToBookInfoDtoCustom(BookInfoOL bookInfo, @MappingTarget BookInfoDTO book) {
-        BookInfoDetailOL details = bookInfo.getDetails();
+    default void bookInfoOlToBookInfoDtoCustom(OpenLibraryBookDto bookInfo, @MappingTarget BookInfoDto book) {
+        BookDetailDto details = bookInfo.details();
         List<String> isbns = new ArrayList<String>();
-        List<String> isbn13 = details.getIdentifiers().getIsbn13();
+        List<String> isbn13 = bookInfo.details().identifiers().isbn13();
         List<String> isbn10 = details.getIdentifiers().getIsbn10();
         if (isbn13 != null) {
             for (String isbn : isbn13) {

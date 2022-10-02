@@ -11,15 +11,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OpenLibraryBookDeserializer extends JsonDeserializer<BookDto> {
+public class OpenLibraryBookDeserializer extends JsonDeserializer<OpenLibraryBookDto> {
 
     @Override
-    public BookDto deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public OpenLibraryBookDto deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String isbn = p.nextFieldName();
         JsonNode node = p.getCodec().readTree(p);
-        BookDto book = new BookDto(isbn, objectMapper.treeToValue(node.get(isbn), BookDetailDto.class));
+        OpenLibraryBookDto book = new OpenLibraryBookDto(isbn, objectMapper.treeToValue(node.get(isbn), OpenLibraryBookDetailDto.class));
         return book;
     }
 }

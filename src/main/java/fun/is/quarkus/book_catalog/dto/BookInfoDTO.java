@@ -2,7 +2,7 @@ package fun.is.quarkus.book_catalog.dto;
 
 import java.util.List;
 
-public record BookInfoDTO (
+public record BookInfoDto (
     String catalogId,
     String title,
     String openLibraryUrl,
@@ -11,7 +11,5 @@ public record BookInfoDTO (
     String publishDate,
     boolean inCatalog,
     List<String> isbns,
-    List<AuthorDTO> authors
+    List<BookInfoAuthorDto> authors
 ) {}
-
-final record AuthorDTO (String openLibraryUrl, String name) {}

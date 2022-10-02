@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.BookDto;
+import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.OpenLibraryBookDto;
 
 @Path("/api")
 @RegisterRestClient(configKey = "open_library_api")
@@ -19,5 +19,5 @@ public interface OpenLibraryApi {
     @GET
     @Path("/books")
     @Produces(MediaType.APPLICATION_JSON)
-    public BookDto getBookInfo(@QueryParam("bibkeys") final String isbn, @QueryParam("format") final String format, @QueryParam("jscmd") final String jscmd);
+    public OpenLibraryBookDto getBookInfo(@QueryParam("bibkeys") final String isbn, @QueryParam("format") final String format, @QueryParam("jscmd") final String jscmd);
 }
