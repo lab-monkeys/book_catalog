@@ -1,6 +1,0 @@
-quarkus:
-  openapi-generator:
-    codegen:
-      spec:
-        stargate_openapi_json:
-          base-package: fun.is.quarkus.stargate
