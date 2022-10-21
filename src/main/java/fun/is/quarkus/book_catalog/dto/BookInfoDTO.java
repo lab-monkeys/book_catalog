@@ -10,6 +10,6 @@ public record BookInfoDto (
     String coverImageUrl,
     String publishDate,
     boolean inCatalog,
-    List<String> isbns,
+    BookIdentifiersDto bookIds,
     List<BookInfoAuthorDto> authors
 ) {}

@@ -14,46 +14,6 @@ import fun.is.quarkus.book_catalog.dto.BookInfoDto;
 @Mapper(componentModel = "cdi")
 public interface BookInfoMapper {
 
-    AuthorDTO authorEntityToDto(Author entity);
-
-    List<AuthorDTO> authorsEntityToDtos(List<Author> entities);
-
-    @Mapping(target = "bookInfo", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    Author authorDtoToEntity(AuthorDTO dto);
-
-    List<Author> authorDtosToEntitys(List<AuthorDTO> dtos);
-
-    @Mapping(target = "isbns", ignore = true)
-    BookInfoDto bookInfoEntityToDto(BookInfo entity);
-
-    @AfterMapping
-    default void bookInfoEntityToDtoCustom(BookInfo entity, @MappingTarget BookInfoDto dto) {
-        List<String> isbns = new ArrayList<String>();
-        for (ISBN isbn : entity.getIsbns()) {
-            isbns.add(isbn.getIsbn());
-        }
-        dto.setIsbns(isbns);
-    }
-
-    @Mapping(target = "isbns", ignore = true)
-    BookInfo bookInfoDtoToEntity(BookInfoDto dto);
-
-    @AfterMapping
-    default void bookInfoDtoToEntityCustom(BookInfoDto dto, @MappingTarget BookInfo bookInfo) {
-        List<ISBN> isbns = new ArrayList<ISBN>();
-        for (String isbn : dto.getIsbns()) {
-            ISBN entity = new ISBN();
-            entity.setBookInfo(bookInfo);
-            entity.setIsbn(isbn);
-            isbns.add(entity);
-        }
-        bookInfo.setIsbns(isbns);
-        for (Author author : bookInfo.getAuthors()) {
-            author.setBookInfo(bookInfo);
-        }
-    }
-
     @Mapping(target = "openLibraryUrl", source = "url")
     @Mapping(target = "name", source = "name")
     AuthorDTO authorOlToAuthorDTO(AuthorOL author);
