@@ -1,8 +1,8 @@
-package fun.is.quarkus.book_catalog.dto;
+package fun.is.quarkus.book_catalog.model;
 
 import java.util.List;
 
-public record BookInfoDto (
+public record BookInfo (
     String catalogId,
     String title,
     String openLibraryUrl,
@@ -10,6 +10,6 @@ public record BookInfoDto (
     String coverImageUrl,
     String publishDate,
     boolean inCatalog,
-    BookInfoIdentifiersDto identifiers,
-    List<BookInfoAuthorDto> authors
+    BookInfoIdentifiers identifiers,
+    List<BookInfoAuthor> authors
 ) {}
