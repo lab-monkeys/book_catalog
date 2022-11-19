@@ -1,0 +1,11 @@
+quarkus:
+  openapi-generator:
+    codegen:
+      spec:
+        stargate_json: 
+          base-package: "fun.is.quarkus.book_catalog.collaborators.stargate"
+          library: microprofile
+stargate_doc_openapi_json/mp-rest/url: ${STARGATE_DOC_API_URL}
+stargate: 
+  token:
+    renew: 30s
