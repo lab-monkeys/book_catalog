@@ -1,0 +1,17 @@
+quarkus:
+  tls:
+    trust-all: true
+  application:
+    name: bookCatalog
+  http:
+    port: ${SERVER_PORT}
+  log:
+    level: "INFO"
+    console:
+      enable: true
+stargate: 
+  token_renew: "30s"
+  auth:
+    user: ${STARGATE_USER}
+    pw: ${STARGATE_PW}
+stargate_auth/mp-rest/url: ${STARGATE_AUTH_URL}
