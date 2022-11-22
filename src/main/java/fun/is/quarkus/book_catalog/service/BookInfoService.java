@@ -49,10 +49,9 @@ public class BookInfoService implements BookInfoApi {
 
         String isbnQuery = "{\"identifiers." + isbnType + "List.[*]." + isbnType + "\":{\"$eq\":\"" + isbn + "\"}}";
 
-        Throwable error;
-        Response response;
         //stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, isbnQuery, null, null, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).subscribe().with(reply -> {response=reply;}, fail -> {error = fail;});
-        return null;
+        return stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, isbnQuery, null, null, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> reply);
+
     }
 
     @Override
