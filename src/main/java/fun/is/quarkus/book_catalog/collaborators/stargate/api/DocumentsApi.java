@@ -11,6 +11,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.enterprise.context.ApplicationScoped;
+import javax.json.JsonObject;
 
 import io.smallrye.mutiny.Uni;
 
@@ -203,6 +204,24 @@ public interface DocumentsApi {
         Object body
     );
 
+    // /**
+    //  * Search for documents in {collection-id}
+    //  *
+    //  */
+    // @GET
+    // @Path("/namespaces/{namespace-id}/collections/{collection-id}")
+    // @Produces({"application/json"})
+    // public Uni<Response> searchDoc(
+    //     @HeaderParam("X-Cassandra-Token") String xCassandraToken, 
+    //     @PathParam("namespace-id") String namespaceId, 
+    //     @PathParam("collection-id") String collectionId, 
+    //     @QueryParam("where") Object where, 
+    //     @QueryParam("fields") String fields, 
+    //     @QueryParam("page-size") Integer pageSize, 
+    //     @QueryParam("page-state") String pageState, 
+    //     @QueryParam("raw") Boolean raw
+    // );
+
     /**
      * Search for documents in {collection-id}
      *
@@ -214,11 +233,7 @@ public interface DocumentsApi {
         @HeaderParam("X-Cassandra-Token") String xCassandraToken, 
         @PathParam("namespace-id") String namespaceId, 
         @PathParam("collection-id") String collectionId, 
-        @QueryParam("where") Object where, 
-        @QueryParam("fields") String fields, 
-        @QueryParam("page-size") Integer pageSize, 
-        @QueryParam("page-state") String pageState, 
-        @QueryParam("raw") Boolean raw
+        @QueryParam("where") Object where
     );
 
     /**

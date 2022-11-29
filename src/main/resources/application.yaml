@@ -6,12 +6,23 @@ quarkus:
   http:
     port: ${SERVER_PORT}
   log:
-    level: "INFO"
+    level: "DEBUG"
     console:
       enable: true
+    category:
+      "org.jboss.resteasy.reactive.client.logging":
+      level: DEBUG
+  rest-client:
+    logging:
+      scope: request-response
+      body-limit: 1024
 stargate: 
   token_renew: "30s"
   auth:
     user: ${STARGATE_USER}
     pw: ${STARGATE_PW}
+  book-catalog:
+    namespace: home_library
+    collection: book_catalog
 stargate_auth/mp-rest/url: ${STARGATE_AUTH_URL}
+stargate_json/mp-rest/url: ${STARGATE_JSON_URL}

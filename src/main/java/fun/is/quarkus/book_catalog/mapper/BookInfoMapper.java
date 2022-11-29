@@ -43,6 +43,8 @@ public interface BookInfoMapper {
 
     BookInfoDto bookInfoToDto(BookInfo book);
 
+    List<BookInfoDto> bookInfosToDtos(List<BookInfo> books);
+
     BookInfoAuthor dtoToBookInfoAuthor(BookInfoAuthorDto dto);
 
     BookInfoAuthorDto bookInfoAuthorToDto(BookInfoAuthor author);

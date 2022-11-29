@@ -1,18 +1,18 @@
 package fun.is.quarkus.book_catalog.service;
 
 import java.time.Duration;
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import fun.is.quarkus.book_catalog.api.BookInfoApi;
 import fun.is.quarkus.book_catalog.collaborators.stargate.api.DocumentsApi;
 import fun.is.quarkus.book_catalog.dto.BookInfoDto;
+import fun.is.quarkus.book_catalog.mapper.BookInfoMapper;
+import fun.is.quarkus.book_catalog.model.Books;
+import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
@@ -29,6 +29,9 @@ public class BookInfoService implements BookInfoApi {
 
     @RestClient
     DocumentsApi stargateDoc;
+
+    @Inject
+    BookInfoMapper bookMapper;
 
     @Override
     public Uni<Response> getBookById(String catalogId) {
@@ -49,9 +52,7 @@ public class BookInfoService implements BookInfoApi {
 
         String isbnQuery = "{\"identifiers." + isbnType + "List.[*]." + isbnType + "\":{\"$eq\":\"" + isbn + "\"}}";
 
-        //stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, isbnQuery, null, null, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).subscribe().with(reply -> {response=reply;}, fail -> {error = fail;});
-        return stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, isbnQuery, null, null, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> reply);
-
+        return stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, isbnQuery).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> processReply(reply)).onFailure().transform(fail -> new Exception(fail.getMessage()));
     }
 
     @Override
@@ -72,5 +73,7 @@ public class BookInfoService implements BookInfoApi {
         return null;
     }
 
-
+    private Response processReply(Response reply) {
+        return Response.ok(bookMapper.bookInfosToDtos(reply.readEntity(Books.class).books())).build();
+    }
 }
