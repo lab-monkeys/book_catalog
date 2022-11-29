@@ -8,11 +8,11 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import fun.is.quarkus.book_catalog.api.BookInfoApi;
+import fun.is.quarkus.book_catalog.collaborators.openlibrary.api.OpenLibraryApi;
 import fun.is.quarkus.book_catalog.collaborators.stargate.api.DocumentsApi;
 import fun.is.quarkus.book_catalog.dto.BookInfoDto;
 import fun.is.quarkus.book_catalog.mapper.BookInfoMapper;
 import fun.is.quarkus.book_catalog.model.Books;
-import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
@@ -28,7 +28,12 @@ public class BookInfoService implements BookInfoApi {
     StargateAuthToken authToken;
 
     @RestClient
+    @Inject
     DocumentsApi stargateDoc;
+
+    @RestClient
+    @Inject
+    OpenLibraryApi openLibrary;
 
     @Inject
     BookInfoMapper bookMapper;
@@ -52,28 +57,29 @@ public class BookInfoService implements BookInfoApi {
 
         String isbnQuery = "{\"identifiers." + isbnType + "List.[*]." + isbnType + "\":{\"$eq\":\"" + isbn + "\"}}";
 
-        return stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, isbnQuery).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> processReply(reply)).onFailure().transform(fail -> new Exception(fail.getMessage()));
+        return processQuery(isbnQuery);
     }
 
     @Override
     public Uni<Response> getBooksByAuthor(String author) {
-        // TODO Auto-generated method stub
-        return null;
+        
+        String authorQuery = "{\"authors.[*].name\":{\"$eq\":\"" + author + "\"}}";
+
+        return processQuery(authorQuery);
     }
 
     @Override
     public Uni<Response> getOpenLibraryBookByIsbn(String isbn) {
-        // TODO Auto-generated method stub
+        // return openLibrary.getBookInfo(isbn, "json", "data")
         return null;
     }
 
     @Override
     public Uni<Response> saveBookInfo(BookInfoDto dto) {
-        // TODO Auto-generated method stub
-        return null;
+        return stargateDoc.addDoc(authToken.getAuthToken(), cassNamespace, cassCollection, bookMapper.dtoToBookInfo(dto)).onItem().transform(reply -> Response.ok(reply.readEntity(Object.class)).build());
     }
 
-    private Response processReply(Response reply) {
-        return Response.ok(bookMapper.bookInfosToDtos(reply.readEntity(Books.class).books())).build();
+    private Uni<Response> processQuery(String query) {
+        return stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, query, null, null, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> Response.ok(bookMapper.bookInfosToDtos(reply.readEntity(Books.class).books())).build()).onFailure().transform(fail -> new Exception(fail.getMessage()));
     }
 }

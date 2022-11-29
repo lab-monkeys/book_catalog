@@ -2,6 +2,7 @@ package fun.is.quarkus.book_catalog.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -22,20 +23,18 @@ public class BooksDeserializer extends JsonDeserializer<Books> {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode data = p.getCodec().readTree(p);
-        Log.info(data);
+        Log.debug(data);
         JsonNode books = data.get("data");
-        Log.info(books);
+        Log.debug(books);
         
         int resultSize = data.size();
-        Log.info("Result Size: " + resultSize);
-        int index = 0;
+        Log.debug("Result Size: " + resultSize);
         List<BookInfo> results = new ArrayList<BookInfo>();
-        while (index < resultSize) {
-            Log.info(data.get(0));
-            BookInfo bookInfo = objectMapper.treeToValue(data.get(index), BookInfo.class);
-            Log.info(bookInfo);
+        Iterator<String> fields = books.fieldNames();
+        while (fields.hasNext()) {
+            BookInfo bookInfo = objectMapper.treeToValue(books.get(fields.next()), BookInfo.class);
+            Log.debug(bookInfo);
             results.add(bookInfo);
-            index ++;
         }
         return new Books(results);
     }

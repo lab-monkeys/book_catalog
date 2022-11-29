@@ -3,11 +3,8 @@ package fun.is.quarkus.book_catalog.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-
 import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.OpenLibraryBookAuthorDto;
 import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.OpenLibraryBookDto;
 import fun.is.quarkus.book_catalog.dto.BookInfoIdentifiersDto;
@@ -49,13 +46,7 @@ public interface BookInfoMapper {
 
     BookInfoAuthorDto bookInfoAuthorToDto(BookInfoAuthor author);
 
-    @Mapping(target = "isbn10List", ignore = true)
-    @Mapping(target = "isbn13List", ignore = true)
-    BookInfoIdentifiers dtoToBookInfoIdentifiers(BookInfoIdentifiersDto dto);
-
-    @AfterMapping
-    default void dtoToBookInfoIdentifiersCustom(BookInfoIdentifiersDto dto, @MappingTarget BookInfoIdentifiers identifiers) {
-
+    default BookInfoIdentifiers dtoToBookInfoIdentifiers(BookInfoIdentifiersDto dto){
         List<BookInfoISBN10> isbn10List = new ArrayList<BookInfoISBN10>();
         List<BookInfoISBN13> isbn13List = new ArrayList<BookInfoISBN13>();
         for (String isbn : dto.isbn10()) {
@@ -66,15 +57,10 @@ public interface BookInfoMapper {
             BookInfoISBN13 isbn13 = new BookInfoISBN13(isbn);
             isbn13List.add(isbn13);
         }
-        identifiers = new BookInfoIdentifiers(isbn10List, isbn13List);
+        return new BookInfoIdentifiers(isbn10List, isbn13List);
     }
 
-    @Mapping(target = "isbn10", ignore = true)
-    @Mapping(target = "isbn13", ignore = true)
-    BookInfoIdentifiersDto bookInfoIdentifiersToDto(BookInfoIdentifiers identifiers);
-
-    @AfterMapping
-    default void bookInfoIdentifiersToDtoCustom(BookInfoIdentifiers identifiers, @MappingTarget BookInfoIdentifiersDto dto) {
+    default BookInfoIdentifiersDto bookInfoIdentifiersToDto(BookInfoIdentifiers identifiers) {
         List<String> isbn10 = new ArrayList<String>();
         List<String> isbn13 = new ArrayList<String>();
 
@@ -84,6 +70,7 @@ public interface BookInfoMapper {
         for (BookInfoISBN13 isbn : identifiers.isbn13List()) {
             isbn13.add(isbn.isbn13());
         }
-        dto = new BookInfoIdentifiersDto(isbn10, isbn13);
+        return new BookInfoIdentifiersDto(isbn10, isbn13);
+
     }
 }
