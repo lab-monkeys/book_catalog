@@ -2,7 +2,6 @@ package fun.is.quarkus.book_catalog.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.OpenLibraryBookAuthorDto;
