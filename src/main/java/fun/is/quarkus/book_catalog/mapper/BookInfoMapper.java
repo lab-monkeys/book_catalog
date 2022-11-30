@@ -31,8 +31,9 @@ public interface BookInfoMapper {
     @Mapping(source = "details.publishDate", target = "publishDate")
     @Mapping(source = "details.authors", target = "authors")
     @Mapping(source = "details.identifiers", target = "identifiers")
+    // @Mapping(source = "details.identifiers.openlibrary.[0]", target = "catalogId")
     @Mapping(target = "inCatalog", ignore = true)
-    @Mapping(target = "catalogId", ignore = true)
+    @Mapping(target = "catalogId", expression = "java(bookInfo.details().identifiers().openlibrary().get(0))")
     BookInfoDto OpenLibraryBookDtoToBookInfoDto(OpenLibraryBookDto bookInfo);
 
     BookInfo dtoToBookInfo(BookInfoDto dto);
@@ -48,14 +49,16 @@ public interface BookInfoMapper {
     default BookInfoIdentifiers dtoToBookInfoIdentifiers(BookInfoIdentifiersDto dto){
         List<BookInfoISBN10> isbn10List = new ArrayList<BookInfoISBN10>();
         List<BookInfoISBN13> isbn13List = new ArrayList<BookInfoISBN13>();
+        if (dto.isbn10() != null) {
         for (String isbn : dto.isbn10()) {
             BookInfoISBN10 isbn10 = new BookInfoISBN10(isbn);
             isbn10List.add(isbn10);
-        }
+        }}
+        if (dto.isbn13() != null) {
         for (String isbn : dto.isbn13()) {
             BookInfoISBN13 isbn13 = new BookInfoISBN13(isbn);
             isbn13List.add(isbn13);
-        }
+        }}
         return new BookInfoIdentifiers(isbn10List, isbn13List);
     }
 
@@ -63,12 +66,14 @@ public interface BookInfoMapper {
         List<String> isbn10 = new ArrayList<String>();
         List<String> isbn13 = new ArrayList<String>();
 
+        if (identifiers.isbn10List() != null) {
         for (BookInfoISBN10 isbn : identifiers.isbn10List()) {
             isbn10.add(isbn.isbn10());
-        }
+        }}
+        if (identifiers.isbn13List() != null) {
         for (BookInfoISBN13 isbn : identifiers.isbn13List()) {
             isbn13.add(isbn.isbn13());
-        }
+        }}
         return new BookInfoIdentifiersDto(isbn10, isbn13);
 
     }

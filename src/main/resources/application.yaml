@@ -26,3 +26,5 @@ stargate:
     collection: book_catalog
 stargate_auth/mp-rest/url: ${STARGATE_AUTH_URL}
 stargate_json/mp-rest/url: ${STARGATE_JSON_URL}
+open_library_api/mp-rest/url: ${OPEN_LIBRARY_URL}
+

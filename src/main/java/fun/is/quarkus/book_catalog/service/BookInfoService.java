@@ -9,6 +9,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import fun.is.quarkus.book_catalog.api.BookInfoApi;
 import fun.is.quarkus.book_catalog.collaborators.openlibrary.api.OpenLibraryApi;
+import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.OpenLibraryBookDto;
 import fun.is.quarkus.book_catalog.collaborators.stargate.api.DocumentsApi;
 import fun.is.quarkus.book_catalog.dto.BookInfoDto;
 import fun.is.quarkus.book_catalog.mapper.BookInfoMapper;
@@ -70,13 +71,12 @@ public class BookInfoService implements BookInfoApi {
 
     @Override
     public Uni<Response> getOpenLibraryBookByIsbn(String isbn) {
-        // return openLibrary.getBookInfo(isbn, "json", "data")
-        return null;
+        return openLibrary.getBookInfo(isbn, "json", "data").ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> Response.ok(bookMapper.OpenLibraryBookDtoToBookInfoDto(reply.readEntity(OpenLibraryBookDto.class))).build()).onFailure().transform(fail -> new Exception(fail.getMessage()));
     }
 
     @Override
     public Uni<Response> saveBookInfo(BookInfoDto dto) {
-        return stargateDoc.addDoc(authToken.getAuthToken(), cassNamespace, cassCollection, bookMapper.dtoToBookInfo(dto)).onItem().transform(reply -> Response.ok(reply.readEntity(Object.class)).build());
+        return stargateDoc.replaceDoc(authToken.getAuthToken(), cassNamespace, cassCollection, dto.catalogId(), bookMapper.dtoToBookInfo(dto)).onItem().transform(reply -> Response.ok(reply.readEntity(Object.class)).build());
     }
 
     private Uni<Response> processQuery(String query) {

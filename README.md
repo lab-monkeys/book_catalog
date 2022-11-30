@@ -1,6 +1,7 @@
 Set Env:
 
 ```bash
+export OPEN_LIBRARY_URL=https://openlibrary.org
 export SERVER_PORT=8080
 export STARGATE_USER=$(oc -n k8ssandra-operator get secret k8ssandra-cluster-superuser -o jsonpath="{.data.username}" | base64 -d)
 export STARGATE_PW=$(oc -n k8ssandra-operator get secret k8ssandra-cluster-superuser -o jsonpath="{.data.password}" | base64 -d)
