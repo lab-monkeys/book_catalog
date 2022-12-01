@@ -28,9 +28,9 @@ public interface BookInfoApi {
     public Uni<Response> getBookByIsbn(@PathParam("isbn") String isbn);
 
     @GET
-    @Path("/books-by-author/{author}")
+    @Path("/books-by-author/{author}/{num_results}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> getBooksByAuthor(@PathParam("author") String author);
+    public Uni<Response> getBooksByAuthor(@PathParam("author") String author, @PathParam("num_results") Integer numResults);
 
     @GET
     @Path("/open-library/{isbn}")

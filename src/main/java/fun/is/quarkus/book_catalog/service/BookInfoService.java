@@ -58,15 +58,15 @@ public class BookInfoService implements BookInfoApi {
 
         String isbnQuery = "{\"identifiers." + isbnType + "List.[*]." + isbnType + "\":{\"$eq\":\"" + isbn + "\"}}";
 
-        return processQuery(isbnQuery);
+        return processQuery(isbnQuery, 1);
     }
 
     @Override
-    public Uni<Response> getBooksByAuthor(String author) {
+    public Uni<Response> getBooksByAuthor(String author, Integer numResults) {
         
         String authorQuery = "{\"authors.[*].name\":{\"$eq\":\"" + author + "\"}}";
 
-        return processQuery(authorQuery);
+        return processQuery(authorQuery, numResults);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class BookInfoService implements BookInfoApi {
         return stargateDoc.replaceDoc(authToken.getAuthToken(), cassNamespace, cassCollection, dto.catalogId(), bookMapper.dtoToBookInfo(dto)).onItem().transform(reply -> Response.ok(reply.readEntity(Object.class)).build());
     }
 
-    private Uni<Response> processQuery(String query) {
-        return stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, query, null, null, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> Response.ok(bookMapper.bookInfosToDtos(reply.readEntity(Books.class).books())).build()).onFailure().transform(fail -> new Exception(fail.getMessage()));
+    private Uni<Response> processQuery(String query, Integer numResults) {
+        return stargateDoc.searchDoc(authToken.getAuthToken(), cassNamespace, cassCollection, query, null, numResults, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> Response.ok(bookMapper.bookInfosToDtos(reply.readEntity(Books.class).books())).build()).onFailure().transform(fail -> new Exception(fail.getMessage()));
     }
 }
