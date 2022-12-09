@@ -20,7 +20,7 @@ import io.smallrye.mutiny.Uni;
   * <p/>The Stargate Document API provides CRUD operations on document data managed by Stargate.
   */
 @Path("/v2")
-@RegisterRestClient(baseUri="https://localhost:8082", configKey="stargate_json")
+@RegisterRestClient(configKey="stargate_doc")
 @ApplicationScoped
 public interface DocumentsApi {
 

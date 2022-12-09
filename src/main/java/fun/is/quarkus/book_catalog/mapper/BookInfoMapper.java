@@ -31,7 +31,6 @@ public interface BookInfoMapper {
     @Mapping(source = "details.publishDate", target = "publishDate")
     @Mapping(source = "details.authors", target = "authors")
     @Mapping(source = "details.identifiers", target = "identifiers")
-    // @Mapping(source = "details.identifiers.openlibrary.[0]", target = "catalogId")
     @Mapping(target = "inCatalog", ignore = true)
     @Mapping(target = "catalogId", expression = "java(bookInfo.details().identifiers().openlibrary().get(0))")
     BookInfoDto OpenLibraryBookDtoToBookInfoDto(OpenLibraryBookDto bookInfo);
