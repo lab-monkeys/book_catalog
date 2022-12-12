@@ -13,6 +13,7 @@ import fun.is.quarkus.book_catalog.collaborators.openlibrary.dto.OpenLibraryBook
 import fun.is.quarkus.book_catalog.collaborators.stargate.api.DocumentsApi;
 import fun.is.quarkus.book_catalog.dto.BookInfoDto;
 import fun.is.quarkus.book_catalog.mapper.BookInfoMapper;
+import fun.is.quarkus.book_catalog.model.BookById;
 import fun.is.quarkus.book_catalog.model.Books;
 import io.smallrye.mutiny.Uni;
 
@@ -41,8 +42,7 @@ public class BookInfoService implements BookInfoApi {
 
     @Override
     public Uni<Response> getBookById(String catalogId) {
-        stargateDoc.getDocById(authToken.getAuthToken(), cassNamespace, cassCollection, catalogId, catalogId, null);
-        return null;
+        return stargateDoc.getDocById(authToken.getAuthToken(), cassNamespace, cassCollection, catalogId, null, null).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Query Timeout")).onItem().transform(reply -> Response.ok(bookMapper.bookInfoToDto(reply.readEntity(BookById.class).data())).build()).onFailure().transform(fail -> new Exception(fail.getMessage()));
     }
 
     @Override

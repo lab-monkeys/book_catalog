@@ -3,16 +3,9 @@ package fun.is.quarkus.book_catalog.collaborators.stargate.api;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.enterprise.context.ApplicationScoped;
-import javax.json.JsonObject;
-
 import io.smallrye.mutiny.Uni;
 
 /**
