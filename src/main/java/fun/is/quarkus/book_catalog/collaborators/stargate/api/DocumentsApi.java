@@ -4,9 +4,10 @@ package fun.is.quarkus.book_catalog.collaborators.stargate.api;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.core.Response;
 import io.smallrye.mutiny.Uni;
+
 
 /**
   * Stargate Document API reference

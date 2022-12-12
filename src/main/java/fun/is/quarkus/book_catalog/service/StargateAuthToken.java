@@ -12,13 +12,12 @@ import org.jboss.logging.Logger;
 
 import fun.is.quarkus.book_catalog.collaborators.stargate.api.AuthApi;
 import fun.is.quarkus.book_catalog.collaborators.stargate.model.Credentials;
-import fun.is.quarkus.book_catalog.collaborators.stargate.model.Token;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.scheduler.Scheduled;
 
 @Singleton
 public class StargateAuthToken {
-    
+       
     final Logger LOG = Logger.getLogger(StargateAuthToken.class);
 
     @RestClient
@@ -34,9 +33,11 @@ public class StargateAuthToken {
     Credentials stargateCreds = null;
 
     void startUp(@Observes StartupEvent startupEvent) {
-        stargateCreds = new Credentials(stargateUser, stargatePw);
+        stargateCreds = new Credentials();
+        stargateCreds.setPassword(stargatePw);
+        stargateCreds.setUsername(stargateUser);
     }
-    
+       
     @Scheduled(every = "{stargate.token_renew}")
     public void authenticate() {
         stargateAuth.createToken(stargateCreds).ifNoItem().after(Duration.ofMillis(1000)).failWith(new Exception("Request Timeout - Authentication")).subscribe().with(reply -> setToken(reply), fail -> handleFailure(fail));

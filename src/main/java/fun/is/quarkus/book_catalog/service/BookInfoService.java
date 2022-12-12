@@ -63,7 +63,7 @@ public class BookInfoService implements BookInfoApi {
 
     @Override
     public Uni<Response> getBooksByAuthor(String author, Integer numResults) {
-        
+           
         String authorQuery = "{\"authors.[*].name\":{\"$eq\":\"" + author + "\"}}";
 
         return processQuery(authorQuery, numResults);

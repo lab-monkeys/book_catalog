@@ -26,7 +26,7 @@ public class BooksDeserializer extends JsonDeserializer<Books> {
         Log.debug(data);
         JsonNode books = data.get("data");
         Log.debug(books);
-        
+           
         int resultSize = data.size();
         Log.debug("Result Size: " + resultSize);
         List<BookInfo> results = new ArrayList<BookInfo>();
